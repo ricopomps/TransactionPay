@@ -1,22 +1,51 @@
 package com.example.transactionpay;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.telecom.Call;
+import android.view.View;
 import android.widget.TextView;
 
+import com.example.transactionpay.service.RetrofitConfig;
+import com.example.transactionpay.service.SelectionAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
-private TextView username;
-private TextView password;
+    private TextView mUsername;
+    private List<String> list = new ArrayList<>();
+    private RecyclerView mSelectionRecyclerView;
+    private SelectionAdapter aSelectionAdapter;
+    public static final int REQUESTCODE = 55;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        username = findViewById(R.id.usernameText);
-        password = findViewById(R.id.passwordText);
+        list.add("deposit");
+        list.add("transfer");
         Intent intent = getIntent();
-        username.setText((String)intent.getStringExtra(LoginActivity.USERNAME));
-        password.setText((String)intent.getStringExtra(LoginActivity.PASSWORD));
-}
+        mUsername = findViewById(R.id.usernameShow);
+        mUsername.setText(intent.getStringExtra(LoginActivity.USERNAME));
+        aSelectionAdapter = new SelectionAdapter(this, list);
+        mSelectionRecyclerView = findViewById(R.id.recyclerView);
+        mSelectionRecyclerView.setAdapter(aSelectionAdapter);
+        mSelectionRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) );
+        aSelectionAdapter.list = list;
+        mSelectionRecyclerView.getAdapter().notifyItemChanged(list.size());
+        mSelectionRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+
+
+
+    public void goToTransactions(View view) {
+        Intent intent = new Intent(MainActivity.this, TransactionsActivity.class);
+        startActivityForResult(intent, REQUESTCODE);
+    }
 }
