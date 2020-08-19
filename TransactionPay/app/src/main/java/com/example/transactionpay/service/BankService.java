@@ -1,5 +1,6 @@
 package com.example.transactionpay.service;
 
+import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.User;
 
 import java.util.List;
@@ -24,5 +25,18 @@ public interface BankService {
 
     @PUT("user/update")
     Call<User> updateUser(User user);
+
+    @POST("accounts")
+    Call<Account> createAccount(@Header("cpf")String cpf,@Header("pws")String pws);
+//create needs body
+    @GET("accounts")
+    Call<Account> getAccount(@Header("cpf") String cpf,@Header("pws") String pws);
+
+    @PUT("transaction")
+    Call<Account> changeAccountStatus(@Header("account") int accountNumber,@Header("cpf") String cpf,@Header("pws") String pws);
+//change needs body
+    @GET("getAllAccounnts")
+    Call<List<Account>> getAllAccounts(@Header("cpf") String cpf,@Header("pws") String pws);
+
 
 }

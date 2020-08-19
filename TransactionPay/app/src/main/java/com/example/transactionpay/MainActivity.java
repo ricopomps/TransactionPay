@@ -6,10 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.User;
 import com.example.transactionpay.service.RetrofitConfig;
 import com.example.transactionpay.service.SelectionAdapter;
@@ -17,9 +18,14 @@ import com.example.transactionpay.service.SelectionAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
     private TextView mUsername;
     private TextView mBalance;
+    private User user;
     private List<String> list = new ArrayList<>();
     private RecyclerView mSelectionRecyclerView;
     private SelectionAdapter aSelectionAdapter;
@@ -34,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mUsername = findViewById(R.id.usernameShow);
         mBalance = findViewById(R.id.avaiableMoney);
-
-        User user = (User) intent.getSerializableExtra(LoginActivity.USER);
+        user = (User) intent.getSerializableExtra(LoginActivity.USER);
         mUsername.setText(user.getName());
         aSelectionAdapter = new SelectionAdapter(this, list);
         mSelectionRecyclerView = findViewById(R.id.recyclerView);
@@ -44,11 +49,37 @@ public class MainActivity extends AppCompatActivity {
         aSelectionAdapter.list = list;
         mSelectionRecyclerView.getAdapter().notifyItemChanged(list.size());
         mSelectionRecyclerView.getAdapter().notifyDataSetChanged();
+        getBalance();
+
     }
 
 
     public void goToTransactions(View view) {
         Intent intent = new Intent(MainActivity.this, TransactionsActivity.class);
         startActivityForResult(intent, REQUESTCODE);
+    }
+
+
+
+    public void getBalance() {
+//
+        Call<Account> call= new RetrofitConfig().getBankService().getAccount(user.getCpf(),user.getPws());
+        call.enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                Account account = response.body();
+                mBalance.setText(String.valueOf(account.getAccount_balance()));
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+
+            }
+        });
+
+
     }
 }
