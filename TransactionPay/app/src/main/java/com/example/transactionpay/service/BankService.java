@@ -1,6 +1,7 @@
 package com.example.transactionpay.service;
 
 import com.example.transactionpay.model.Account;
+import com.example.transactionpay.model.AccountCreator;
 import com.example.transactionpay.model.Amount;
 import com.example.transactionpay.model.Boleto;
 import com.example.transactionpay.model.Transaction;
@@ -32,16 +33,15 @@ public interface BankService {
     Call<User> updateUser(@Body User user);
 
     @POST("accounts")
-    Call<Account> createAccount(@Header("cpf") String cpf, @Header("pws") String pws, @Body String cpf2);
+    Call<Account> createAccount(@Header("cpf") String cpf, @Header("pws") String pws, @Body AccountCreator accountCreator);
 
-    //create needs body
+
     @GET("accounts")
     Call<Account> getAccount(@Header("cpf") String cpf, @Header("pws") String pws);
 
     @PUT("transaction")
-    Call<Account> changeAccountStatus(@Header("account") String accountNumber, @Header("cpf") String cpf, @Header("pws") String pws,@Body Type type);
+    Call<Account> changeAccountStatus(@Header("account") String account, @Header("cpf") String cpf, @Header("pws") String pws,@Body Type type);
 
-    //change needs body
     @GET("getAllAccounnts")
     Call<List<Account>> getAllAccounts(@Header("cpf") String cpf, @Header("pws") String pws);
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.transactionpay.model.Account;
+import com.example.transactionpay.model.AccountCreator;
 import com.example.transactionpay.model.User;
 import com.example.transactionpay.service.RetrofitConfig;
 import com.example.transactionpay.service.SelectionAdapter;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private SelectionAdapter aSelectionAdapter;
     public static final int REQUESTCODE = 55;
     public static SharedPreferences sharedPreferences;
-    private  SharedPreferences.Editor  editor;
+    public static SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,23 +45,19 @@ public class MainActivity extends AppCompatActivity {
         list.add("transferencia");
         list.add("boleto");
         list.add("config");
-        list.add("default");
-        list.add("default");
-        list.add("default");
-        list.add("default");
         Intent intent = getIntent();
         mUsername = findViewById(R.id.usernameShow);
         mBalance = findViewById(R.id.avaiableMoney);
         user = (User) intent.getSerializableExtra(LoginActivity.USER);
 
         editor = sharedPreferences.edit();
-        editor.putString("userName",user.getName());
+        editor.putString("userName", user.getName());
         editor.putString("userCpf", user.getCpf());
-        editor.putString("userId",user.get_id());
-        editor.putString("userAvatar",user.getAvatar());
-        editor.putInt("userPhone",user.getTelefone());
+        editor.putString("userId", user.get_id());
+        editor.putString("userAvatar", user.getAvatar());
+        editor.putInt("userPhone", user.getTelefone());
         editor.apply();
-        mUsername.setText(sharedPreferences.getString("userName","no name"));
+        mUsername.setText(sharedPreferences.getString("userName", "no name"));
         aSelectionAdapter = new SelectionAdapter(this, list);
         mSelectionRecyclerView = findViewById(R.id.recyclerView);
         mSelectionRecyclerView.setAdapter(aSelectionAdapter);
@@ -75,11 +72,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getBalance();
-        mUsername.setText(sharedPreferences.getString("userName","no name"));
+        mUsername.setText(sharedPreferences.getString("userName", "no name"));
     }
 
     public void trigger(View view) {
         getBalance();
+
+
     }
 
     public void goToActivity(Intent intent) {

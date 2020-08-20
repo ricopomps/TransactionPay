@@ -75,7 +75,6 @@ public class TransactionsActivity extends AppCompatActivity {
                 break;
             case ("config"):
                 title.setText("Configuration");
-////                startActivity(new Intent(TransactionsActivity.this,ConfigActivity.class));
                 checkBox.setVisibility(View.VISIBLE);
                 text1.setText("Name");
                 editText1.setText(MainActivity.sharedPreferences.getString("userName", "default name"));
@@ -155,6 +154,7 @@ public class TransactionsActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+
                 break;
             case ("boleto"):
                 call = new RetrofitConfig().getBankService().payBoleto(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Boleto(editText1.getText().toString(), Double.parseDouble(editText2.getText().toString())));
@@ -187,10 +187,8 @@ public class TransactionsActivity extends AppCompatActivity {
                         Toast.makeText(TransactionsActivity.this,"FAILURE",Toast.LENGTH_LONG);
                     }
                 });
-                MainActivity.sharedPreferences.edit().putString("userName",user.getName());
-                MainActivity.sharedPreferences.edit().apply();
-                MainActivity.sharedPreferences.edit().apply();
-                MainActivity.sharedPreferences.edit().commit();
+                MainActivity.editor.putString("userName",user.getName());
+                MainActivity.editor.apply();
                 break;
             default:
 

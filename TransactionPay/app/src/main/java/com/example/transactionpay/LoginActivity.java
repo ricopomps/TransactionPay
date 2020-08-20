@@ -61,4 +61,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void signIn(View view){
+        startActivityForResult(new Intent(LoginActivity.this,SignInActivity.class),START);
+    }
+
 }
