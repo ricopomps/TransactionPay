@@ -1,26 +1,44 @@
 package com.example.transactionpay.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
 
+
+@JsonIgnoreProperties({"mensagem","comprovante", "bank_account", "createdAt", "updatedAt", "__v"})
 public class Transaction {
-    private int OriginalAccountNumber;
+    private String _id;
+    private int source_transaction;
     private Date date;
     private double value;
     private int targetAccountNumber;
 
-    public Transaction(int originalAccountNumber, Date date, double value, int targetAccountNumber) {
-        OriginalAccountNumber = originalAccountNumber;
+    public Transaction() {
+
+    }
+
+    public Transaction(String _id, int originalAccountNumber, Date date, double value, int targetAccountNumber) {
+        this._id = _id;
+        source_transaction = originalAccountNumber;
         this.date = date;
         this.value = value;
         this.targetAccountNumber = targetAccountNumber;
     }
 
-    public int getOriginalAccountNumber() {
-        return OriginalAccountNumber;
+    public String get_id() {
+        return _id;
     }
 
-    public void setOriginalAccountNumber(int originalAccountNumber) {
-        OriginalAccountNumber = originalAccountNumber;
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public int getSource_transaction() {
+        return source_transaction;
+    }
+
+    public void setSource_transaction(int source_transaction) {
+        this.source_transaction = source_transaction;
     }
 
     public Date getDate() {

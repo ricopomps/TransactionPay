@@ -4,121 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:padding="35dp"
     tools:context=".TransactionsActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:text="WELCOME"
-        android:textColor="@android:color/holo_orange_light"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/usernameShow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="9dp"
-        android:text="username"
-        android:textColor="@android:color/holo_orange_light"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
     <LinearLayout
-        android:id="@+id/balance"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
         android:background="@android:color/holo_orange_light"
         android:orientation="vertical"
-        android:padding="20dp"
+        android:padding="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:text="Avaiable"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textView"
+            android:id="@+id/title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="Recharge"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|center"
+            android:text="TextView"
+            android:textSize="40dp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/avaiableMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:text="$50,00"
-            android:textStyle="bold" />
-
-
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/vendings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:background="#ff00ddff"
-        android:onClick="goToVendings"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/holo_orange_light"
+        android:layout_marginTop="50dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/balance"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="278dp">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Confirm password:"
+             android:gravity="center"
+             >
+         </TextView>
 
-        <TextView
+        <EditText
+            android:id="@+id/confirmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vendings" />
-    </LinearLayout>
+            android:gravity="center_vertical|center"
+            android:hint="Confirm password">
 
-    <LinearLayout
-        android:id="@+id/transactions"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:background="#ffffffff"
-        android:orientation="vertical"
-        app:layout_constraintStart_toEndOf="@+id/vendings"
-        app:layout_constraintTop_toBottomOf="@+id/balance"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="278dp">
+        </EditText>
 
         <TextView
-
+            android:id="@+id/firstTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Transactions" />
+            android:text="Codigo do boleto"
+            android:gravity="center"
+            >
+
+        </TextView>
+
+        <EditText
+            android:id="@+id/firstEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </EditText>
+
+        <TextView
+            android:id="@+id/secondTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ammount"
+            android:gravity="center"
+            >
+        </TextView>
+        <EditText
+            android:id="@+id/secondEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </EditText>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical|center"
+            android:onClick="start"
+            android:text="Confirm" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,14 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.transactionpay.MainActivity;
 import com.example.transactionpay.R;
+import com.example.transactionpay.TransactionsActivity;
+import com.example.transactionpay.model.Transaction;
+import com.example.transactionpay.model.Transferencia;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.SelectionHolder> {
 
     private final LayoutInflater layoutInflater;
     private Context context;
     public List<String> list;
+    public static final String EXTRA = "EXTRA";
 
     public SelectionAdapter(Context context, List<String> list) {
         this.list = list;
@@ -50,6 +58,7 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
     class SelectionHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView selectionText;
         private ConstraintLayout selectionLayout;
+
         public SelectionHolder(@NonNull View itemView) {
             super(itemView);
             selectionLayout = itemView.findViewById(R.id.layoutObject);
@@ -60,20 +69,13 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
 
         @Override
         public void onClick(View view) {
-            Intent intent;
+            Intent intent= new Intent(context,TransactionsActivity.class);
             String selection = selectionText.getText().toString();
-            switch (selection){
-                case ("deposit"):
-                    Toast.makeText(context, "Deposit", Toast.LENGTH_LONG).show();
-                    break;
-                case ("transfer"):
-                    Toast.makeText(context, "Transaction", Toast.LENGTH_LONG).show();
-                    break;
-                default:
-                    Toast.makeText(context, "Errrr...what?", Toast.LENGTH_LONG).show();
-                    break;
-            }
+            intent.putExtra(EXTRA,selection);
+            context.startActivity(intent);
+//
 
 
+        }
     }
-}}
+}

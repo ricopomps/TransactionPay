@@ -1,6 +1,10 @@
 package com.example.transactionpay.service;
 
 import com.example.transactionpay.model.Account;
+import com.example.transactionpay.model.Amount;
+import com.example.transactionpay.model.Boleto;
+import com.example.transactionpay.model.Transaction;
+import com.example.transactionpay.model.Transferencia;
 import com.example.transactionpay.model.User;
 
 import java.util.List;
@@ -27,16 +31,27 @@ public interface BankService {
     Call<User> updateUser(User user);
 
     @POST("accounts")
-    Call<Account> createAccount(@Header("cpf")String cpf,@Header("pws")String pws);
-//create needs body
+    Call<Account> createAccount(@Header("cpf") String cpf, @Header("pws") String pws, @Body String cpf2);
+
+    //create needs body
     @GET("accounts")
-    Call<Account> getAccount(@Header("cpf") String cpf,@Header("pws") String pws);
+    Call<Account> getAccount(@Header("cpf") String cpf, @Header("pws") String pws);
 
     @PUT("transaction")
-    Call<Account> changeAccountStatus(@Header("account") int accountNumber,@Header("cpf") String cpf,@Header("pws") String pws);
-//change needs body
+    Call<Account> changeAccountStatus(@Header("account") int accountNumber, @Header("cpf") String cpf, @Header("pws") String pws);
+
+    //change needs body
     @GET("getAllAccounnts")
-    Call<List<Account>> getAllAccounts(@Header("cpf") String cpf,@Header("pws") String pws);
+    Call<List<Account>> getAllAccounts(@Header("cpf") String cpf, @Header("pws") String pws);
+
+    @POST("transaction/pagamento")
+    Call<Transaction> payBoleto(@Header("account") String account, @Header("cpf") String cpf, @Header("pws") String pws, @Body Boleto boleto);
+
+    @POST("transaction/transferencia")
+    Call<Transaction> transfer(@Header("cpf") String cpf, @Header("pws") String pws, @Body Transferencia transerencia);
+
+    @POST("transaction/deposito")
+    Call<Transaction> deposit(@Header("account") String account,@Header("cpf") String cpf,@Header("pws")String pws,@Body Amount amount);
 
 
 }
