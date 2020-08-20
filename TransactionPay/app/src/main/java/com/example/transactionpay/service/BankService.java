@@ -5,6 +5,7 @@ import com.example.transactionpay.model.Amount;
 import com.example.transactionpay.model.Boleto;
 import com.example.transactionpay.model.Transaction;
 import com.example.transactionpay.model.Transferencia;
+import com.example.transactionpay.model.Type;
 import com.example.transactionpay.model.User;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public interface BankService {
     Call<List<User>> getAllUsers(String adiminCpf);
 
     @PUT("user/update")
-    Call<User> updateUser(User user);
+    Call<User> updateUser(@Body User user);
 
     @POST("accounts")
     Call<Account> createAccount(@Header("cpf") String cpf, @Header("pws") String pws, @Body String cpf2);
@@ -38,7 +39,7 @@ public interface BankService {
     Call<Account> getAccount(@Header("cpf") String cpf, @Header("pws") String pws);
 
     @PUT("transaction")
-    Call<Account> changeAccountStatus(@Header("account") int accountNumber, @Header("cpf") String cpf, @Header("pws") String pws);
+    Call<Account> changeAccountStatus(@Header("account") String accountNumber, @Header("cpf") String cpf, @Header("pws") String pws,@Body Type type);
 
     //change needs body
     @GET("getAllAccounnts")

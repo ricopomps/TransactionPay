@@ -43,14 +43,24 @@ public class MainActivity extends AppCompatActivity {
         list.add("deposit");
         list.add("transferencia");
         list.add("boleto");
+        list.add("config");
+        list.add("default");
+        list.add("default");
+        list.add("default");
+        list.add("default");
         Intent intent = getIntent();
         mUsername = findViewById(R.id.usernameShow);
         mBalance = findViewById(R.id.avaiableMoney);
         user = (User) intent.getSerializableExtra(LoginActivity.USER);
-        mUsername.setText(user.getName());
+
         editor = sharedPreferences.edit();
+        editor.putString("userName",user.getName());
         editor.putString("userCpf", user.getCpf());
+        editor.putString("userId",user.get_id());
+        editor.putString("userAvatar",user.getAvatar());
+        editor.putInt("userPhone",user.getTelefone());
         editor.apply();
+        mUsername.setText(sharedPreferences.getString("userName","no name"));
         aSelectionAdapter = new SelectionAdapter(this, list);
         mSelectionRecyclerView = findViewById(R.id.recyclerView);
         mSelectionRecyclerView.setAdapter(aSelectionAdapter);
@@ -61,10 +71,11 @@ public class MainActivity extends AppCompatActivity {
         getBalance();
     }
 
-
-    public void goToTransactions(View view) {
-        Intent intent = new Intent(MainActivity.this, TransactionsActivity.class);
-        startActivityForResult(intent, REQUESTCODE);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getBalance();
+        mUsername.setText(sharedPreferences.getString("userName","no name"));
     }
 
     public void trigger(View view) {
@@ -77,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getBalance() {
-//
+        mUsername.setText(sharedPreferences.getString("userName","no name"));
         Call<Account> call = new RetrofitConfig().getBankService().getAccount(user.getCpf(), user.getPws());
         call.enqueue(new Callback<Account>() {
             @Override
@@ -85,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 Account account = response.body();
                 mBalance.setText(String.valueOf(account.getAccount_balance()));
                 editor.putString("userAccount", account.getCode());
+                editor.putInt("userAccountStatus",account.getStatus());
                 editor.apply();
 
 
