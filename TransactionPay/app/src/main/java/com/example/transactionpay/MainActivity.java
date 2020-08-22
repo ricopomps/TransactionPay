@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.AccountCreator;
+import com.example.transactionpay.model.Type;
 import com.example.transactionpay.model.User;
 import com.example.transactionpay.service.RetrofitConfig;
 import com.example.transactionpay.service.SelectionAdapter;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //MAIN PROBLEMS
+        //cancelar conta, getByUser, historico de transações, maybe give the boleto codigo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences("Shared", Context.MODE_PRIVATE);
@@ -45,11 +48,12 @@ public class MainActivity extends AppCompatActivity {
         list.add("transferencia");
         list.add("boleto");
         list.add("config");
+        list.add("history");
+
         Intent intent = getIntent();
         mUsername = findViewById(R.id.usernameShow);
         mBalance = findViewById(R.id.avaiableMoney);
         user = (User) intent.getSerializableExtra(LoginActivity.USER);
-
         editor = sharedPreferences.edit();
         editor.putString("userName", user.getName());
         editor.putString("userCpf", user.getCpf());
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         mUsername.setText(sharedPreferences.getString("userName", "no name"));
         aSelectionAdapter = new SelectionAdapter(this, list);
-        mSelectionRecyclerView = findViewById(R.id.recyclerView);
+        mSelectionRecyclerView = findViewById(R.id.mainActivityRecyclerView);
         mSelectionRecyclerView.setAdapter(aSelectionAdapter);
         mSelectionRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         aSelectionAdapter.list = list;
@@ -93,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Account> call, Response<Account> response) {
                 Account account = response.body();
-                mBalance.setText(String.valueOf(account.getAccount_balance()));
+                mBalance.setText("R$ " + String.valueOf(account.getAccount_balance()));
+                editor.putFloat("userAccountBalance",(float) account.getAccount_balance());
                 editor.putString("userAccount", account.getCode());
                 editor.putInt("userAccountStatus",account.getStatus());
                 editor.apply();

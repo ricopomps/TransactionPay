@@ -4,6 +4,8 @@ import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.AccountCreator;
 import com.example.transactionpay.model.Amount;
 import com.example.transactionpay.model.Boleto;
+import com.example.transactionpay.model.Receipt;
+import com.example.transactionpay.model.Status;
 import com.example.transactionpay.model.Transaction;
 import com.example.transactionpay.model.Transferencia;
 import com.example.transactionpay.model.Type;
@@ -35,12 +37,11 @@ public interface BankService {
     @POST("accounts")
     Call<Account> createAccount(@Header("cpf") String cpf, @Header("pws") String pws, @Body AccountCreator accountCreator);
 
-
     @GET("accounts")
     Call<Account> getAccount(@Header("cpf") String cpf, @Header("pws") String pws);
 
-    @PUT("transaction")
-    Call<Account> changeAccountStatus(@Header("account") String account, @Header("cpf") String cpf, @Header("pws") String pws,@Body Type type);
+    @PUT("accounts")
+    Call<Account> changeAccountStatus(@Header("cpf") String cpf, @Header("pws") String pws, @Body Status status);
 
     @GET("getAllAccounnts")
     Call<List<Account>> getAllAccounts(@Header("cpf") String cpf, @Header("pws") String pws);
@@ -53,6 +54,9 @@ public interface BankService {
 
     @POST("transaction/deposito")
     Call<Transaction> deposit(@Header("account") String account,@Header("cpf") String cpf,@Header("pws")String pws,@Body Amount amount);
+
+    @GET("transaction/getByUser")
+    Call<List<Receipt>> getHistory(@Header("cpf") String cpf, @Header("pws") String pws);
 
 
 }

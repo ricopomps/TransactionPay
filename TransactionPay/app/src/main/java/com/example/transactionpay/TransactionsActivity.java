@@ -14,8 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.transactionpay.model.Account;
+import com.example.transactionpay.model.AccountCreator;
 import com.example.transactionpay.model.Amount;
 import com.example.transactionpay.model.Boleto;
+import com.example.transactionpay.model.Status;
 import com.example.transactionpay.model.Transaction;
 import com.example.transactionpay.model.Transferencia;
 import com.example.transactionpay.model.Type;
@@ -35,6 +37,7 @@ public class TransactionsActivity extends AppCompatActivity {
     private TextView title;
     private EditText editText1;
     private Call<Transaction> call;
+    User user;
     private String selection;
     private EditText editText2;
     private EditText confirmPassword;
@@ -57,10 +60,15 @@ public class TransactionsActivity extends AppCompatActivity {
         backIntent = new Intent(TransactionsActivity.this, MainActivity.class);
         selection = intent.getStringExtra(SelectionAdapter.EXTRA);
         checkBox.setVisibility(View.INVISIBLE);
+        if (MainActivity.sharedPreferences.getInt("userAccountStatus", 0) == 1) {
+                checkBox.setChecked(true);
+            } else {
+                checkBox.setChecked(false);
+            }
         switch (selection) {
             case ("deposit"):
                 title.setText("Deposito");
-                text1.setText("Ammount");
+                text1.setText("Amount");
                 editText2.setVisibility(View.INVISIBLE);
                 text2.setVisibility(View.INVISIBLE);
 
@@ -81,8 +89,13 @@ public class TransactionsActivity extends AppCompatActivity {
                 text2.setText("Phone");
                 editText2.setText(String.valueOf(MainActivity.sharedPreferences.getInt("userPhone", 0)));
                 break;
+            case ("history"):
+
+                TransactionsActivity.this.startActivity(new Intent(TransactionsActivity.this, HistoryActivity.class));
+//                finish();
+                break;
             default:
-                 title.setText("DEFAULT");
+                title.setText("DEFAULT");
                 break;
         }
 
@@ -90,37 +103,45 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     public void onCheckBoxClicked(View view) {
+
         boolean checked = ((CheckBox) view).isChecked();
         if (checked) {
             //activate account
-            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Type("1"));
+            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status(1));
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-
+                    MainActivity.editor.putInt("userAccountStatus", 1);
+                    MainActivity.editor.apply();
                 }
 
                 @Override
                 public void onFailure(Call<Account> call, Throwable t) {
-
+                    MainActivity.editor.putInt("userAccountStatus", 1);
+                    MainActivity.editor.apply();
                 }
             });
         } else {
             //deactivate account
-            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Type("0"));
+            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status(3));
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
+                    MainActivity.editor.putInt("userAccountStatus", 3);
+                    MainActivity.editor.apply();
 
                 }
 
                 @Override
                 public void onFailure(Call<Account> call, Throwable t) {
-
+                    MainActivity.editor.putInt("userAccountStatus", 3);
+                    MainActivity.editor.apply();
                 }
             });
+
         }
     }
+
     public void start(View view) {
         switch (selection) {
             case ("deposit"):
@@ -172,23 +193,25 @@ public class TransactionsActivity extends AppCompatActivity {
                 break;
             case ("config"):
                 SharedPreferences sP = MainActivity.sharedPreferences;
-                User user = new User(sP.getString("userId",""),sP.getString("userCpf",""),editText1.getText().toString(),sP.getString("userAvatar",""),Integer.parseInt(editText2.getText().toString()),confirmPassword.getText().toString());
+                user = new User(sP.getString("userId", ""), sP.getString("userCpf", ""), editText1.getText().toString(), sP.getString("userAvatar", ""), Integer.parseInt(editText2.getText().toString()), confirmPassword.getText().toString());
                 Call<User> call = new RetrofitConfig().getBankService().updateUser(user);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
 
-                        Toast.makeText(TransactionsActivity.this,"SUCESS",Toast.LENGTH_LONG);
+                        Toast.makeText(TransactionsActivity.this, "SUCESS", Toast.LENGTH_LONG);
+                        MainActivity.editor.putString("userName", user.getName());
+                        MainActivity.editor.putInt("userPhone", user.getTelefone());
+                        MainActivity.editor.apply();
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(TransactionsActivity.this,"FAILURE",Toast.LENGTH_LONG);
+                        Toast.makeText(TransactionsActivity.this, "FAILURE", Toast.LENGTH_LONG);
                     }
                 });
-                MainActivity.editor.putString("userName",user.getName());
-                MainActivity.editor.apply();
+
                 break;
             default:
 
