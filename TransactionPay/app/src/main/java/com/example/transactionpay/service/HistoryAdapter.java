@@ -21,7 +21,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     private final LayoutInflater layoutInflater;
     private Context context;
     public List<Receipt> list;
-
     public HistoryAdapter(Context context, List<Receipt> list) {
         this.context = context;
         this.list = list;
@@ -38,26 +37,31 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
 
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
-        String pattern = "dd/MM/yyyy HH:mm:ss";
+        String pattern = "dd/MM/yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
         Receipt receipt = list.get(position);
         holder.transactionType.setText("unknow");
-        //Random numbers, must check the right ones
+        holder.sourceAccount.setText("Source account: " + receipt.getBank_account().get(0));
+        holder.targetAccount.setText("Target account: " + receipt.getBank_account().get(1));
+        holder.sourceAccount.setVisibility(View.INVISIBLE);
+        holder.targetAccount.setVisibility(View.INVISIBLE);
         if (receipt.getSource_transaction() == 0) {
-            holder.transactionType.setText("Transferencia");
-        }
+            holder.transactionType.setText(context.getString(R.string.transfer));
+            holder.sourceAccount.setVisibility(View.VISIBLE);
+            holder.targetAccount.setVisibility(View.VISIBLE);
 
+        }
         if (receipt.getSource_transaction() == 1) {
-            holder.transactionType.setText("Deposito");
+            holder.transactionType.setText(context.getString(R.string.deposit));
+
         }
 
         if (receipt.getSource_transaction() == 2) {
-            holder.transactionType.setText("Boleto");
+            holder.transactionType.setText(context.getString(R.string.boleto));
         }
-        holder.sourceAccount.setText("Source account: "+receipt.getBank_account().get(0));
-        holder.targetAccount.setText("Target account: "+receipt.getBank_account().get(1));
-        holder.amount.setText("Amount: R$"+String.valueOf(receipt.getAmount()));
-        holder.date.setText("Date: "+df.format(receipt.getCreatedAt()));
+
+        holder.amount.setText("Amount: R$" + String.valueOf(receipt.getAmount()));
+        holder.date.setText("Date: " + df.format(receipt.getCreatedAt()));
 
 
     }

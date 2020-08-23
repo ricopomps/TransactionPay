@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">TransactionPay</string>
+    <string name="deposit">Deposit</string>
+    <string name="transfer">Transfer</string>
+    <string name="boleto">Boleto</string>
+    <string name="config">Config</string>
+    <string name="history">History</string>
+<!--    <string name="userName">userName</string>-->
+<!--    <string name="userCpf">userCpf</string>-->
+<!--    <string name="userId">userId</string>-->
+<!--    <string name="userAvatar">userAvatar</string>-->
+<!--    <string name="userPhone">userPhone</string>-->
+
+
+
+
+
+
 </resources>

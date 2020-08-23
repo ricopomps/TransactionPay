@@ -22,10 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText username;
     private EditText password;
     private Intent intent;
-    User user;
-    private Button login;
-    public static final String USERNAME = "USERNAME";
-    public static final String PASSWORD = "PASSWORD";
+    private User user;
     public static final String USER = "USER";
     public static final int START = 42;
 
@@ -33,10 +30,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        intent= new Intent(LoginActivity.this, MainActivity.class);
+        intent = new Intent(LoginActivity.this, MainActivity.class);
         username = findViewById(R.id.usernameEditText);
         password = findViewById(R.id.passwordEditText);
-        login = findViewById(R.id.loginButton);
 
 
 
@@ -48,8 +44,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 user = response.body();
-                intent.putExtra(USER,user);
-                startActivityForResult(intent,START);
+                intent.putExtra(USER, user);
+                startActivityForResult(intent, START);
 
             }
 
@@ -61,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void signIn(View view){
-        startActivityForResult(new Intent(LoginActivity.this,SignInActivity.class),START);
+    public void signIn(View view) {
+        startActivityForResult(new Intent(LoginActivity.this, SignInActivity.class), START);
     }
 
 }

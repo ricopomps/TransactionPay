@@ -1,17 +1,30 @@
 package com.example.transactionpay.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties({"createdAt", "updatedAt", "__v"})
+@Entity
 public class Account implements Serializable {
+    @PrimaryKey @NonNull
     private String _id;
+    @ColumnInfo(name = "bank_branch")
     private String bank_branch;
+    @ColumnInfo(name = "code")
     private String code;
+    @ColumnInfo(name = "user")
     private String user;
+    @ColumnInfo(name = "account_balance")
     private double account_balance;
+    @ColumnInfo(name = "status")
     private int status;
+
 
     public  Account(){
         

@@ -1,5 +1,6 @@
 package com.example.transactionpay.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,9 +10,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 
 @JsonIgnoreProperties({"createdAt", "updatedAt", "__v"})
-@Entity
+@Entity(tableName = "user")
 public class User implements Serializable {
-    @PrimaryKey
+    @PrimaryKey @NonNull
     private String _id;
     @ColumnInfo(name = "cpf")
     private String cpf;

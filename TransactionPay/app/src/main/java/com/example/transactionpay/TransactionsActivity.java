@@ -37,13 +37,12 @@ public class TransactionsActivity extends AppCompatActivity {
     private TextView title;
     private EditText editText1;
     private Call<Transaction> call;
-    User user;
-    private String selection;
+    private User user;
+    private int stringId;
     private EditText editText2;
     private EditText confirmPassword;
     private CheckBox checkBox;
     private Intent intent;
-    private Intent backIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,42 +56,43 @@ public class TransactionsActivity extends AppCompatActivity {
         confirmPassword = findViewById(R.id.confirmPassword);
         checkBox = findViewById(R.id.checkBox);
         intent = getIntent();
-        backIntent = new Intent(TransactionsActivity.this, MainActivity.class);
-        selection = intent.getStringExtra(SelectionAdapter.EXTRA);
+        stringId = intent.getIntExtra(SelectionAdapter.EXTRA, 0);
         checkBox.setVisibility(View.INVISIBLE);
         if (MainActivity.sharedPreferences.getInt("userAccountStatus", 0) == 1) {
-                checkBox.setChecked(true);
-            } else {
-                checkBox.setChecked(false);
-            }
-        switch (selection) {
-            case ("deposit"):
-                title.setText("Deposito");
+            checkBox.setChecked(true);
+        } else {
+            checkBox.setChecked(false);
+        }
+
+
+        switch (stringId) {
+            case (R.string.deposit):
+                title.setText(R.string.deposit);
                 text1.setText("Amount");
                 editText2.setVisibility(View.INVISIBLE);
                 text2.setVisibility(View.INVISIBLE);
 
                 break;
-            case ("transferencia"):
-                title.setText("Transferencia");
+            case (R.string.transfer):
+                title.setText(R.string.transfer);
                 text1.setText("Type target account");
 
                 break;
-            case ("boleto"):
-                title.setText("Pagar boleto");
+            case (R.string.boleto):
+                title.setText(R.string.boleto);
                 break;
-            case ("config"):
-                title.setText("Configuration");
+            case (R.string.config):
+                title.setText(R.string.config);
                 checkBox.setVisibility(View.VISIBLE);
                 text1.setText("Name");
                 editText1.setText(MainActivity.sharedPreferences.getString("userName", "default name"));
                 text2.setText("Phone");
                 editText2.setText(String.valueOf(MainActivity.sharedPreferences.getInt("userPhone", 0)));
                 break;
-            case ("history"):
+            case (R.string.history):
 
                 TransactionsActivity.this.startActivity(new Intent(TransactionsActivity.this, HistoryActivity.class));
-//                finish();
+                finish();
                 break;
             default:
                 title.setText("DEFAULT");
@@ -107,34 +107,36 @@ public class TransactionsActivity extends AppCompatActivity {
         boolean checked = ((CheckBox) view).isChecked();
         if (checked) {
             //activate account
-            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status(1));
+            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status( getResources().getInteger(R.integer.accountActiveStatus)));
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-                    MainActivity.editor.putInt("userAccountStatus", 1);
+                    MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountActiveStatus));
                     MainActivity.editor.apply();
                 }
 
+
                 @Override
                 public void onFailure(Call<Account> call, Throwable t) {
-                    MainActivity.editor.putInt("userAccountStatus", 1);
+                    MainActivity.editor.putInt("userAccountStatus",  getResources().getInteger(R.integer.accountActiveStatus));
                     MainActivity.editor.apply();
                 }
             });
+
         } else {
             //deactivate account
-            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status(3));
+            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status( getResources().getInteger(R.integer.accountCancelledStatus)));
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-                    MainActivity.editor.putInt("userAccountStatus", 3);
+                    MainActivity.editor.putInt("userAccountStatus",  getResources().getInteger(R.integer.accountCancelledStatus));
                     MainActivity.editor.apply();
 
                 }
 
                 @Override
                 public void onFailure(Call<Account> call, Throwable t) {
-                    MainActivity.editor.putInt("userAccountStatus", 3);
+                    MainActivity.editor.putInt("userAccountStatus",  getResources().getInteger(R.integer.accountCancelledStatus));
                     MainActivity.editor.apply();
                 }
             });
@@ -143,8 +145,8 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     public void start(View view) {
-        switch (selection) {
-            case ("deposit"):
+        switch (stringId) {
+            case (R.string.deposit):
                 call = new RetrofitConfig().getBankService().deposit(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Amount(Double.parseDouble(editText1.getText().toString())));
                 call.enqueue(new Callback<Transaction>() {
                     @Override
@@ -159,7 +161,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 });
 
                 break;
-            case ("transferencia"):
+            case (R.string.transfer):
                 text1.setText("Type target account");
 
 
@@ -177,7 +179,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 });
 
                 break;
-            case ("boleto"):
+            case (R.string.boleto):
                 call = new RetrofitConfig().getBankService().payBoleto(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Boleto(editText1.getText().toString(), Double.parseDouble(editText2.getText().toString())));
                 call.enqueue(new Callback<Transaction>() {
                     @Override
@@ -191,7 +193,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case ("config"):
+            case (R.string.config):
                 SharedPreferences sP = MainActivity.sharedPreferences;
                 user = new User(sP.getString("userId", ""), sP.getString("userCpf", ""), editText1.getText().toString(), sP.getString("userAvatar", ""), Integer.parseInt(editText2.getText().toString()), confirmPassword.getText().toString());
                 Call<User> call = new RetrofitConfig().getBankService().updateUser(user);

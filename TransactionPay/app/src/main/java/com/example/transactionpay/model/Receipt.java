@@ -1,5 +1,9 @@
 package com.example.transactionpay.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
@@ -7,11 +11,17 @@ import java.util.List;
 
 
 @JsonIgnoreProperties({"updatedAt", "__v"})
+//@Entity
 public class Receipt {
-    private List<String> bank_account;
+//    @PrimaryKey
     private String _id;
+//    @ColumnInfo(name = "bank_account")
+    private List<String> bank_account;
+//    @ColumnInfo(name = "source_transaction")
     private int source_transaction;
+//    @ColumnInfo(name = "amount")
     private double amount;
+//    @ColumnInfo(name = "createdAt")
     private Date createdAt;
 
     public Receipt() {

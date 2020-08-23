@@ -28,10 +28,10 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
 
     private final LayoutInflater layoutInflater;
     private Context context;
-    public List<String> list;
+    public List<Integer> list;
     public static final String EXTRA = "EXTRA";
 
-    public SelectionAdapter(Context context, List<String> list) {
+    public SelectionAdapter(Context context, List<Integer> list) {
         this.list = list;
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
@@ -46,12 +46,13 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
 
     @Override
     public void onBindViewHolder(@NonNull SelectionHolder holder, int position) {
-        String string = list.get(position);
-        holder.selectionText.setText(string);
+        int stringId = list.get(position);
+        holder.selectionText.setText(context.getString(stringId));
     }
 
     @Override
     public int getItemCount() {
+
         return list.size();
     }
 
@@ -70,7 +71,7 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
         @Override
         public void onClick(View view) {
             Intent intent= new Intent(context,TransactionsActivity.class);
-            String selection = selectionText.getText().toString();
+            Integer selection =list.get(getLayoutPosition());
             intent.putExtra(EXTRA,selection);
             context.startActivity(intent);
 //
