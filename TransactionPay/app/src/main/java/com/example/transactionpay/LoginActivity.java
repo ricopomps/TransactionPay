@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.transactionpay.model.User;
 import com.example.transactionpay.repository.UserRepository;
@@ -35,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.passwordEditText);
 
 
-
     }
 
     public void login(View view) {
@@ -43,15 +43,21 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                user = response.body();
-                intent.putExtra(USER, user);
-                startActivityForResult(intent, START);
+
+                if (response.code() != 400) {
+                    user = response.body();
+                    intent.putExtra(USER, user);
+                    startActivityForResult(intent, START);
+                } else {
+                    Toast.makeText(LoginActivity.this, "Credenciais inválidas", Toast.LENGTH_LONG).show();
+
+                }
 
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.e("Get user", "N funfou o get user");
+                Log.e("Get user", "Error in get user");
             }
         });
 

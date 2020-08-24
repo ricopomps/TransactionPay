@@ -43,14 +43,14 @@ public interface BankService {
     @PUT("accounts")
     Call<Account> changeAccountStatus(@Header("cpf") String cpf, @Header("pws") String pws, @Body Status status);
 
-    @GET("getAllAccounnts")
+    @GET("getAllAccounts")
     Call<List<Account>> getAllAccounts(@Header("cpf") String cpf, @Header("pws") String pws);
 
     @POST("transaction/pagamento")
     Call<Transaction> payBoleto(@Header("account") String account, @Header("cpf") String cpf, @Header("pws") String pws, @Body Boleto boleto);
 
     @POST("transaction/transferencia")
-    Call<Transaction> transfer(@Header("cpf") String cpf, @Header("pws") String pws, @Body Transferencia transerencia);
+    Call<Transaction> transfer(@Header("cpf") String cpf, @Header("pws") String pws, @Body Transferencia transferencia);
 
     @POST("transaction/deposito")
     Call<Transaction> deposit(@Header("account") String account,@Header("cpf") String cpf,@Header("pws")String pws,@Body Amount amount);

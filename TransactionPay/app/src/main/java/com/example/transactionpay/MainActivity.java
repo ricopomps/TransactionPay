@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private SelectionAdapter aSelectionAdapter;
     public static final int REQUESTCODE = 55;
     public static SharedPreferences sharedPreferences;
+    List<Account> accountList;
     public static AppDatabase db;
     public static SharedPreferences.Editor editor;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         sharedPreferences = getSharedPreferences("Shared", Context.MODE_PRIVATE);
         list.add((R.string.deposit));
         list.add((R.string.transfer));
@@ -77,6 +79,27 @@ public class MainActivity extends AppCompatActivity {
         mSelectionRecyclerView.getAdapter().notifyItemChanged(list.size());
         mSelectionRecyclerView.getAdapter().notifyDataSetChanged();
         getBalance();
+        Call<List<Account>> call = new RetrofitConfig().getBankService().getAllAccounts("adminUser","123456");
+        call.enqueue(new Callback<List<Account>>() {
+            @Override
+            public void onResponse(Call<List<Account>> call, Response<List<Account>> response) {
+                accountList = response.body();
+                db.accountDao().deleteAccounts();
+               for(int i = 0;i<response.body().size();i++){
+                   try {
+                       db.accountDao().insertAccounts(accountList.get(i));
+                    } catch (Throwable e){
+
+                   }
+               }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Account>> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override

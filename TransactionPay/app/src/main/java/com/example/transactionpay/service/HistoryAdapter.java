@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.transactionpay.MainActivity;
 import com.example.transactionpay.R;
+import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.Receipt;
 
 import java.text.DateFormat;
@@ -41,8 +43,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         DateFormat df = new SimpleDateFormat(pattern);
         Receipt receipt = list.get(position);
         holder.transactionType.setText("unknow");
-        holder.sourceAccount.setText("Source account: " + receipt.getBank_account().get(0));
-        holder.targetAccount.setText("Target account: " + receipt.getBank_account().get(1));
+        holder.sourceAccount.setText("Source account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(1)).getCode());
+        holder.targetAccount.setText("Target account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(0)).getCode());
         holder.sourceAccount.setVisibility(View.INVISIBLE);
         holder.targetAccount.setVisibility(View.INVISIBLE);
         if (receipt.getSource_transaction() == 0) {

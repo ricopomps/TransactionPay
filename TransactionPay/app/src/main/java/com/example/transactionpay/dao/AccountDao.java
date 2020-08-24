@@ -14,5 +14,8 @@ public interface AccountDao {
     Account getAccountCodeById(String id);
 
     @Insert
-    void insertAccounts(List<Account> accounts);
+    void insertAccounts(Account... account);
+
+    @Query("DELETE FROM account")
+    void deleteAccounts();
 }
