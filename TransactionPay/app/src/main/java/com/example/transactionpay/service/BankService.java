@@ -29,7 +29,7 @@ public interface BankService {
     Call<User> getUser(@Header("cpf") String cpf, @Header("pws") String pws);
 
     @GET("getAllUsers")
-    Call<List<User>> getAllUsers(String adiminCpf);
+    Call<List<User>> getAllUsers(@Header("cpf") String adiminCpf);
 
     @PUT("user/update")
     Call<User> updateUser(@Body User user);

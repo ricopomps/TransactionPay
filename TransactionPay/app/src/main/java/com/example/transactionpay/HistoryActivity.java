@@ -58,7 +58,10 @@ public class HistoryActivity extends AppCompatActivity {
                 editText.setVisibility(View.INVISIBLE);
                 confirm.setVisibility(View.INVISIBLE);
 
-
+                MainActivity.db.receiptDao().deleteReceipts();
+                for(int i=0;i<response.body().size();i++){
+                    MainActivity.db.receiptDao().insertReceipt(response.body().get(i));
+                }
                 aHistoryAdapter.list = response.body();
                 mHistoryRecyclerView.getAdapter().notifyItemChanged(response.body().size());
                 mHistoryRecyclerView.getAdapter().notifyDataSetChanged();
@@ -66,7 +69,13 @@ public class HistoryActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Receipt>> call, Throwable t) {
-
+                if(editText.getText().toString().equals(MainActivity.db.userDao().getUserByCpf(MainActivity.sharedPreferences.getString("userCpf","")).getPws())) {
+                    editText.setVisibility(View.INVISIBLE);
+                    confirm.setVisibility(View.INVISIBLE);
+                    aHistoryAdapter.list = MainActivity.db.receiptDao().getAllReceipts();
+                    mHistoryRecyclerView.getAdapter().notifyItemChanged(MainActivity.db.receiptDao().getAllReceipts().size());
+                    mHistoryRecyclerView.getAdapter().notifyDataSetChanged();
+                }
             }
         });
     }

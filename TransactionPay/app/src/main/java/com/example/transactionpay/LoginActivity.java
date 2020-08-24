@@ -1,6 +1,7 @@
 package com.example.transactionpay;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.transactionpay.model.User;
+import com.example.transactionpay.repository.AppDatabase;
 import com.example.transactionpay.repository.UserRepository;
 import com.example.transactionpay.service.RetrofitConfig;
 
@@ -48,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                     user = response.body();
                     intent.putExtra(USER, user);
                     startActivityForResult(intent, START);
+
                 } else {
                     Toast.makeText(LoginActivity.this, "Credenciais inválidas", Toast.LENGTH_LONG).show();
 
@@ -57,8 +60,15 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.e("Get user", "Error in get user");
-            }
+                AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+                        AppDatabase.class, "bank_database").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+                User user = db.userDao().getUserByCpf(username.getText().toString());
+               if(user.getPws().equals(password.getText().toString())){
+                   intent.putExtra(USER, user);
+                   startActivityForResult(intent, START);
+               }
+                }
         });
 
     }

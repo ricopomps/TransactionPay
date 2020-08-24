@@ -156,6 +156,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
@@ -174,6 +175,8 @@ public class TransactionsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
+
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
@@ -189,6 +192,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
@@ -210,7 +214,8 @@ public class TransactionsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(TransactionsActivity.this, "FAILURE", Toast.LENGTH_LONG);
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
+                        finish();
                     }
                 });
 

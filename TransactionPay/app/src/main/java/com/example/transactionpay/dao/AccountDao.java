@@ -18,4 +18,7 @@ public interface AccountDao {
 
     @Query("DELETE FROM account")
     void deleteAccounts();
+
+    @Query("SELECT * FROM account WHERE user is :user")
+    Account getAccountByUser(String user);
 }

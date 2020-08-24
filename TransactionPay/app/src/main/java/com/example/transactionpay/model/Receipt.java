@@ -1,5 +1,6 @@
 package com.example.transactionpay.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -11,17 +12,17 @@ import java.util.List;
 
 
 @JsonIgnoreProperties({"updatedAt", "__v"})
-//@Entity
+@Entity(tableName = "receipt")
 public class Receipt {
-//    @PrimaryKey
+    @PrimaryKey @NonNull
     private String _id;
-//    @ColumnInfo(name = "bank_account")
+    @ColumnInfo(name = "bank_account")
     private List<String> bank_account;
-//    @ColumnInfo(name = "source_transaction")
+    @ColumnInfo(name = "source_transaction")
     private int source_transaction;
-//    @ColumnInfo(name = "amount")
+    @ColumnInfo(name = "amount")
     private double amount;
-//    @ColumnInfo(name = "createdAt")
+    @ColumnInfo(name = "createdAt")
     private Date createdAt;
 
     public Receipt() {

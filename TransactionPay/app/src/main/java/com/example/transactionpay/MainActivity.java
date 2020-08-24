@@ -23,6 +23,7 @@ import com.example.transactionpay.service.SelectionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,27 +80,8 @@ public class MainActivity extends AppCompatActivity {
         mSelectionRecyclerView.getAdapter().notifyItemChanged(list.size());
         mSelectionRecyclerView.getAdapter().notifyDataSetChanged();
         getBalance();
-        Call<List<Account>> call = new RetrofitConfig().getBankService().getAllAccounts("adminUser","123456");
-        call.enqueue(new Callback<List<Account>>() {
-            @Override
-            public void onResponse(Call<List<Account>> call, Response<List<Account>> response) {
-                accountList = response.body();
-                db.accountDao().deleteAccounts();
-               for(int i = 0;i<response.body().size();i++){
-                   try {
-                       db.accountDao().insertAccounts(accountList.get(i));
-                    } catch (Throwable e){
+        refreshDatabase();
 
-                   }
-               }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Account>> call, Throwable t) {
-
-            }
-        });
     }
 
     @Override
@@ -129,9 +111,58 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Account> call, Throwable t) {
+                Account account = db.accountDao().getAccountByUser(user.get_id());
+                mBalance.setText("R$ " + String.valueOf(account.getAccount_balance()));
+                editor.putFloat("userAccountBalance", (float) account.getAccount_balance());
+                editor.putString("userAccount", account.getCode());
+                editor.putInt("userAccountStatus", account.getStatus());
+                editor.apply();
             }
         });
 
 
     }
+
+    public void refreshDatabase() {
+        Call<List<Account>> call = new RetrofitConfig().getBankService().getAllAccounts("adminUser", "123456");
+        call.enqueue(new Callback<List<Account>>() {
+            @Override
+            public void onResponse(Call<List<Account>> call, Response<List<Account>> response) {
+                accountList = response.body();
+                db.accountDao().deleteAccounts();
+                for (int i = 0; i < response.body().size(); i++) {
+                    try {
+                        db.accountDao().insertAccounts(accountList.get(i));
+                    } catch (Throwable e) {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Account>> call, Throwable t) {
+
+            }
+        });
+
+        Call<List<User>> userCall = new RetrofitConfig().getBankService().getAllUsers("userAdmin");
+        userCall.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                db.userDao().deleteUsers();
+                for (int i = 0; i < response.body().size(); i++) {
+                    db.userDao().insertUsers(response.body().get(i));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
 }
