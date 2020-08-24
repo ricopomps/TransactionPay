@@ -43,8 +43,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         DateFormat df = new SimpleDateFormat(pattern);
         Receipt receipt = list.get(position);
         holder.transactionType.setText("unknow");
-        holder.sourceAccount.setText("Source account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(1)).getCode());
-        holder.targetAccount.setText("Target account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(0)).getCode());
+        holder.sourceAccount.setText("Source account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(0)).getCode());
+        holder.targetAccount.setText("Target account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(1)).getCode());
         holder.sourceAccount.setVisibility(View.INVISIBLE);
         holder.targetAccount.setVisibility(View.INVISIBLE);
         if (receipt.getSource_transaction() == 0) {

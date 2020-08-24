@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 
 
-@JsonIgnoreProperties({"mensagem","comprovante", "bank_account", "createdAt", "updatedAt", "__v"})
+@JsonIgnoreProperties({"codigo_de_barras","account","boleto","mensagem","comprovante", "bank_account", "createdAt", "updatedAt", "__v"})
 public class Transaction {
     private String _id;
     private int source_transaction;

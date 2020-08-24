@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -157,6 +158,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
                         Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
+
                         finish();
                     }
                 });
@@ -175,7 +177,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
-
+                       
                         Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
                         finish();
                     }
@@ -187,12 +189,14 @@ public class TransactionsActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Transaction>() {
                     @Override
                     public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
-                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess"+t.getMessage(), Toast.LENGTH_LONG).show();
+
                         finish();
                     }
                 });
