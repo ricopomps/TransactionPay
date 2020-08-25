@@ -3,6 +3,7 @@ package com.example.transactionpay;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -32,19 +33,29 @@ public class SignInActivity extends AppCompatActivity {
         mPws = findViewById(R.id.pws);
     }
 
-    public void signIn(View view){
-        User user = new User("", mCpf.getText().toString(),mName.getText().toString(),"",Integer.parseInt(mPhone.getText().toString()),mPws.getText().toString());
+    public void signIn(View view) {
+        if (mCpf.getText().toString().trim().length() == 0 || mName.getText().toString().trim().length() == 0 || mPhone.getText().toString().trim().length() == 0 || mPws.getText().toString().trim().length() == 0 ) {
+            Toast.makeText(SignInActivity.this, "All fields must be filled", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!TransactionsActivity.isInt(mPhone.getText().toString())) {
+            Toast.makeText(SignInActivity.this, "Not a valid phone number", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        User user = new User("", mCpf.getText().toString(), mName.getText().toString(), "", Integer.parseInt(mPhone.getText().toString()), mPws.getText().toString());
         Call<User> call = new RetrofitConfig().getBankService().createUser(user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                Call<Account> accountCall = new RetrofitConfig().getBankService().createAccount(mCpf.getText().toString(),mPws.getText().toString(),new AccountCreator(mCpf.getText().toString(),0,0));
+                Call<Account> accountCall = new RetrofitConfig().getBankService().createAccount(mCpf.getText().toString(), mPws.getText().toString(), new AccountCreator(mCpf.getText().toString(), 0, 0));
                 accountCall.enqueue(new Callback<Account>() {
                     @Override
                     public void onResponse(Call<Account> call, Response<Account> response) {
 
                         AccountCreator accountCreator = new AccountCreator(mCpf.getText().toString(), 100, 1);
-                        String cpf =mCpf.getText().toString();
+                        String cpf = mCpf.getText().toString();
                         String pws = mPws.getText().toString();
                         Call<Account> accountCall = new RetrofitConfig().getBankService().createAccount(cpf, pws, accountCreator);
                         accountCall.enqueue(new Callback<Account>() {

@@ -105,10 +105,11 @@ public class TransactionsActivity extends AppCompatActivity {
 
     public void onCheckBoxClicked(View view) {
 
+
         boolean checked = ((CheckBox) view).isChecked();
         if (checked) {
             //activate account
-            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status( getResources().getInteger(R.integer.accountActiveStatus)));
+            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status(getResources().getInteger(R.integer.accountActiveStatus)));
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
@@ -119,25 +120,25 @@ public class TransactionsActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Account> call, Throwable t) {
-                    MainActivity.editor.putInt("userAccountStatus",  getResources().getInteger(R.integer.accountActiveStatus));
+                    MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountActiveStatus));
                     MainActivity.editor.apply();
                 }
             });
 
         } else {
             //deactivate account
-            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status( getResources().getInteger(R.integer.accountCancelledStatus)));
+            Call<Account> call = new RetrofitConfig().getBankService().changeAccountStatus(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Status(getResources().getInteger(R.integer.accountCancelledStatus)));
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-                    MainActivity.editor.putInt("userAccountStatus",  getResources().getInteger(R.integer.accountCancelledStatus));
+                    MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountCancelledStatus));
                     MainActivity.editor.apply();
 
                 }
 
                 @Override
                 public void onFailure(Call<Account> call, Throwable t) {
-                    MainActivity.editor.putInt("userAccountStatus",  getResources().getInteger(R.integer.accountCancelledStatus));
+                    MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountCancelledStatus));
                     MainActivity.editor.apply();
                 }
             });
@@ -146,13 +147,26 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     public void start(View view) {
+
         switch (stringId) {
             case (R.string.deposit):
+                if (!isDouble(editText1.getText().toString())) {
+                    Toast.makeText(TransactionsActivity.this, "Must be a valid amount", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (Double.parseDouble(editText1.getText().toString()) <= 0) {
+                    Toast.makeText(TransactionsActivity.this, "Must be a positive value", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 call = new RetrofitConfig().getBankService().deposit(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Amount(Double.parseDouble(editText1.getText().toString())));
                 call.enqueue(new Callback<Transaction>() {
                     @Override
                     public void onResponse(Call<Transaction> call, Response<Transaction> response) {
-                        finish();
+                        if (response.code() != 400) {
+                            finish();
+                        } else {
+                            Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
@@ -165,64 +179,113 @@ public class TransactionsActivity extends AppCompatActivity {
 
                 break;
             case (R.string.transfer):
-                text1.setText("Type target account");
-
-
+                if (!isDouble(editText2.getText().toString())) {
+                    Toast.makeText(TransactionsActivity.this, "Must be a valid amount", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (Double.parseDouble(editText2.getText().toString()) <= 0) {
+                    Toast.makeText(TransactionsActivity.this, "Must be a positive value", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (editText1.getText().toString().equals(MainActivity.sharedPreferences.getString("userAccount", ""))) {
+                    Toast.makeText(TransactionsActivity.this, "Source account is the same as target account", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                if (MainActivity.sharedPreferences.getFloat("userAccountBalance",0 ) < Double.parseDouble(editText2.getText().toString())){
+                    Toast.makeText(TransactionsActivity.this, "Not enough money", Toast.LENGTH_LONG).show();
+                    break;
+                }
                 call = new RetrofitConfig().getBankService().transfer(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Transferencia(MainActivity.sharedPreferences.getString("userAccount", ""), editText1.getText().toString(), Double.parseDouble(editText2.getText().toString())));
                 call.enqueue(new Callback<Transaction>() {
                     @Override
                     public void onResponse(Call<Transaction> call, Response<Transaction> response) {
-                        finish();
+                        if (response.code() != 400) {
+                            finish();
+                        } else {
+                            Toast.makeText(TransactionsActivity.this, "Invalid password or invalid target account", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
-                       
-                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
+
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet access", Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
 
+
                 break;
             case (R.string.boleto):
+                if (!isDouble(editText2.getText().toString())) {
+                    Toast.makeText(TransactionsActivity.this, "Must be a valid amount", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (Double.parseDouble(editText2.getText().toString()) <= 0) {
+                    Toast.makeText(TransactionsActivity.this, "Must be a positive value", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 call = new RetrofitConfig().getBankService().payBoleto(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Boleto(editText1.getText().toString(), Double.parseDouble(editText2.getText().toString())));
                 call.enqueue(new Callback<Transaction>() {
                     @Override
                     public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                        if (response.code() != 400) {
+                            finish();
+                        } else {
+                            Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
+                        }
 
-                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<Transaction> call, Throwable t) {
-                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess"+t.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet access", Toast.LENGTH_LONG).show();
 
                         finish();
                     }
                 });
+
                 break;
             case (R.string.config):
+
                 SharedPreferences sP = MainActivity.sharedPreferences;
-                user = new User(sP.getString("userId", ""), sP.getString("userCpf", ""), editText1.getText().toString(), sP.getString("userAvatar", ""), Integer.parseInt(editText2.getText().toString()), confirmPassword.getText().toString());
-                Call<User> call = new RetrofitConfig().getBankService().updateUser(user);
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
+                if(!isInt(editText2.getText().toString())){
+                    Toast.makeText(TransactionsActivity.this, "Not a valid phone number", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                user = new User(sP.getString("userId", ""), sP.getString("userCpf", ""), editText1.getText().toString(), sP.getString("userAvatar", ""), Integer.parseInt(editText2.getText().toString()), MainActivity.db.userDao().getUserByCpf(sP.getString("userCpf", "")).getPws());
+                if (confirmPassword.getText().toString().equals(MainActivity.db.userDao().getUserByCpf(sP.getString("userCpf", "")).getPws())) {
 
-                        Toast.makeText(TransactionsActivity.this, "SUCESS", Toast.LENGTH_LONG);
-                        MainActivity.editor.putString("userName", user.getName());
-                        MainActivity.editor.putInt("userPhone", user.getTelefone());
-                        MainActivity.editor.apply();
-                        finish();
-                    }
 
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-                });
+                    Call<User> call = new RetrofitConfig().getBankService().updateUser(user);
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if (response.code() != 400) {
+                                Toast.makeText(TransactionsActivity.this, "SUCCESS", Toast.LENGTH_LONG);
+                                MainActivity.editor.putString("userName", user.getName());
+                                MainActivity.editor.putInt("userPhone", user.getTelefone());
+                                MainActivity.editor.apply();
+                                finish();
+                            } else {
+                                Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
+                            }
+                        }
 
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            if (confirmPassword.getText().toString().equals(MainActivity.db.userDao().getUserByCpf(MainActivity.sharedPreferences.getString("userCpf", "")).getPws())) {
+                                Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet access", Toast.LENGTH_LONG).show();
+                                finish();
+                            } else {
+                                Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
+                }
                 break;
             default:
 
@@ -232,4 +295,20 @@ public class TransactionsActivity extends AppCompatActivity {
 
     }
 
+    public static boolean isDouble(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    public static boolean isInt(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

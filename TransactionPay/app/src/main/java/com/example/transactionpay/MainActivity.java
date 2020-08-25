@@ -21,6 +21,7 @@ import com.example.transactionpay.repository.AppDatabase;
 import com.example.transactionpay.service.RetrofitConfig;
 import com.example.transactionpay.service.SelectionAdapter;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -32,6 +33,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private TextView mUsername;
     private TextView mBalance;
+    private TextView mAccountCode;
     private User user;
     private List<Integer> list = new ArrayList<>();
     private RecyclerView mSelectionRecyclerView;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mUsername = findViewById(R.id.usernameShow);
         mBalance = findViewById(R.id.avaiableMoney);
+        mAccountCode = findViewById(R.id.accountCode);
         user = (User) intent.getSerializableExtra(LoginActivity.USER);
         try {
             db.userDao().insertUsers(user);
@@ -81,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         mSelectionRecyclerView.getAdapter().notifyDataSetChanged();
         getBalance();
         refreshDatabase();
+        mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
+
 
     }
 
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         getBalance();
         mUsername.setText(sharedPreferences.getString("userName", "no name"));
+        mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
     }
 
     public void trigger(View view) {
@@ -97,15 +103,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void getBalance() {
         mUsername.setText(sharedPreferences.getString("userName", "no name"));
+        mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
         Call<Account> call = new RetrofitConfig().getBankService().getAccount(user.getCpf(), user.getPws());
         call.enqueue(new Callback<Account>() {
             @Override
             public void onResponse(Call<Account> call, Response<Account> response) {
                 Account account = response.body();
-                mBalance.setText("R$ " + String.valueOf(account.getAccount_balance()));
+                mBalance.setText("R$ " + new DecimalFormat("#0.00").format((account.getAccount_balance())));
                 editor.putFloat("userAccountBalance", (float) account.getAccount_balance());
                 editor.putString("userAccount", account.getCode());
                 editor.putInt("userAccountStatus", account.getStatus());
+                editor.putString("userAccountCode",account.getCode());
+                mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
                 editor.apply();
             }
 
@@ -116,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putFloat("userAccountBalance", (float) account.getAccount_balance());
                 editor.putString("userAccount", account.getCode());
                 editor.putInt("userAccountStatus", account.getStatus());
+                editor.putString("userAccountCode",account.getCode());
                 editor.apply();
             }
         });

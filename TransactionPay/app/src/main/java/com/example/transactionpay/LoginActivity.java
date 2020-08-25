@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivityForResult(intent, START);
 
                 } else {
-                    Toast.makeText(LoginActivity.this, "Credenciais inválidas", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_LONG).show();
 
                 }
 

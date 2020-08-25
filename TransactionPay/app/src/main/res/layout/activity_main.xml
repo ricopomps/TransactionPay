@@ -87,5 +87,17 @@
         app:layout_constraintStart_toStartOf="@id/balance"
         app:layout_constraintTop_toBottomOf="@id/balance" />
 
+    <TextView
+        android:id="@+id/accountCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:text="Account Code: "
+        android:textColor="@android:color/secondary_text_dark"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/balance"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/usernameShow" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
