@@ -21,4 +21,7 @@ public interface AccountDao {
 
     @Query("SELECT * FROM account WHERE user is :user")
     Account getAccountByUser(String user);
+
+    @Query("SELECT * FROM account WHERE code is :code")
+    Account getAccountByCode(String code);
 }

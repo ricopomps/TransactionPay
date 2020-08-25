@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -18,6 +19,7 @@ import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.AccountCreator;
 import com.example.transactionpay.model.Amount;
 import com.example.transactionpay.model.Boleto;
+import com.example.transactionpay.model.Code;
 import com.example.transactionpay.model.Status;
 import com.example.transactionpay.model.Transaction;
 import com.example.transactionpay.model.Transferencia;
@@ -25,6 +27,8 @@ import com.example.transactionpay.model.Type;
 import com.example.transactionpay.model.User;
 import com.example.transactionpay.service.RetrofitConfig;
 import com.example.transactionpay.service.SelectionAdapter;
+
+import org.w3c.dom.Text;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,6 +88,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 break;
             case (R.string.config):
                 title.setText(R.string.config);
+                editText1.setInputType(InputType.TYPE_CLASS_TEXT);
                 checkBox.setVisibility(View.VISIBLE);
                 text1.setText("Name");
                 editText1.setText(MainActivity.sharedPreferences.getString("userName", "default name"));
@@ -113,8 +118,14 @@ public class TransactionsActivity extends AppCompatActivity {
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-                    MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountActiveStatus));
-                    MainActivity.editor.apply();
+                    if(response.code()!=400) {
+                        MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountActiveStatus));
+                        MainActivity.editor.apply();
+                    } else {
+
+                        Toast.makeText(TransactionsActivity.this,"Invalid password",Toast.LENGTH_LONG).show();
+
+                    }
                 }
 
 
@@ -122,6 +133,8 @@ public class TransactionsActivity extends AppCompatActivity {
                 public void onFailure(Call<Account> call, Throwable t) {
                     MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountActiveStatus));
                     MainActivity.editor.apply();
+
+
                 }
             });
 
@@ -131,8 +144,13 @@ public class TransactionsActivity extends AppCompatActivity {
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-                    MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountCancelledStatus));
-                    MainActivity.editor.apply();
+                    if(response.code()!=400) {
+                        MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountCancelledStatus));
+                        MainActivity.editor.apply();
+                    } else {
+
+                        Toast.makeText(TransactionsActivity.this,"Invalid password",Toast.LENGTH_LONG).show();
+                    }
 
                 }
 
@@ -140,6 +158,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 public void onFailure(Call<Account> call, Throwable t) {
                     MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountCancelledStatus));
                     MainActivity.editor.apply();
+
                 }
             });
 
@@ -158,11 +177,16 @@ public class TransactionsActivity extends AppCompatActivity {
                     Toast.makeText(TransactionsActivity.this, "Must be a positive value", Toast.LENGTH_LONG).show();
                     return;
                 }
-                call = new RetrofitConfig().getBankService().deposit(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Amount(Double.parseDouble(editText1.getText().toString())));
-                call.enqueue(new Callback<Transaction>() {
+
+                Call<Code> callDeposit = new RetrofitConfig().getBankService().deposit(MainActivity.sharedPreferences.getString("userAccount", ""), MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Amount(Double.parseDouble(editText1.getText().toString())));
+                callDeposit.enqueue(new Callback<Code>() {
                     @Override
-                    public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                    public void onResponse(Call<Code> call, Response<Code> response) {
                         if (response.code() != 400) {
+                            Code code = response.body();
+                            Intent intent = new Intent(TransactionsActivity.this, ReceiptActivity.class);
+                            intent.putExtra("code", code);
+                            startActivity(intent);
                             finish();
                         } else {
                             Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
@@ -170,11 +194,11 @@ public class TransactionsActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<Transaction> call, Throwable t) {
-                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
-
+                    public void onFailure(Call<Code> call, Throwable t) {
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess" , Toast.LENGTH_LONG).show();
                         finish();
                     }
+
                 });
 
                 break;
@@ -191,18 +215,27 @@ public class TransactionsActivity extends AppCompatActivity {
                     Toast.makeText(TransactionsActivity.this, "Source account is the same as target account", Toast.LENGTH_LONG).show();
                     break;
                 }
-                if (MainActivity.sharedPreferences.getFloat("userAccountBalance",0 ) < Double.parseDouble(editText2.getText().toString())){
+                if (MainActivity.sharedPreferences.getFloat("userAccountBalance", 0) < Double.parseDouble(editText2.getText().toString())) {
                     Toast.makeText(TransactionsActivity.this, "Not enough money", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                try {
+                    Account account = MainActivity.db.accountDao().getAccountByCode(editText1.getText().toString());
+                    account.getCode();
+                } catch (NullPointerException e){
+                    Toast.makeText(TransactionsActivity.this, "invalid target account", Toast.LENGTH_LONG).show();
                     break;
                 }
                 call = new RetrofitConfig().getBankService().transfer(MainActivity.sharedPreferences.getString("userCpf", ""), confirmPassword.getText().toString(), new Transferencia(MainActivity.sharedPreferences.getString("userAccount", ""), editText1.getText().toString(), Double.parseDouble(editText2.getText().toString())));
                 call.enqueue(new Callback<Transaction>() {
                     @Override
                     public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+
                         if (response.code() != 400) {
+                            startActivity(new Intent(TransactionsActivity.this,ReceiptActivity.class));
                             finish();
                         } else {
-                            Toast.makeText(TransactionsActivity.this, "Invalid password or invalid target account", Toast.LENGTH_LONG).show();
+                            Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -231,6 +264,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Transaction> call, Response<Transaction> response) {
                         if (response.code() != 400) {
+                            startActivity(new Intent(TransactionsActivity.this, ReceiptActivity.class));
                             finish();
                         } else {
                             Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
@@ -250,7 +284,7 @@ public class TransactionsActivity extends AppCompatActivity {
             case (R.string.config):
 
                 SharedPreferences sP = MainActivity.sharedPreferences;
-                if(!isInt(editText2.getText().toString())){
+                if (!isInt(editText2.getText().toString())) {
                     Toast.makeText(TransactionsActivity.this, "Not a valid phone number", Toast.LENGTH_LONG).show();
                     break;
                 }
@@ -303,6 +337,7 @@ public class TransactionsActivity extends AppCompatActivity {
             return false;
         }
     }
+
     public static boolean isInt(String str) {
         try {
             Integer.parseInt(str);

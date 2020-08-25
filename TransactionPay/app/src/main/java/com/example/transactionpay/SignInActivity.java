@@ -34,7 +34,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void signIn(View view) {
-        if (mCpf.getText().toString().trim().length() == 0 || mName.getText().toString().trim().length() == 0 || mPhone.getText().toString().trim().length() == 0 || mPws.getText().toString().trim().length() == 0 ) {
+        if (mCpf.getText().toString().trim().length() == 0 || mName.getText().toString().trim().length() == 0 || mPhone.getText().toString().trim().length() == 0 || mPws.getText().toString().trim().length() == 0) {
             Toast.makeText(SignInActivity.this, "All fields must be filled", Toast.LENGTH_LONG).show();
             return;
         }
@@ -61,11 +61,17 @@ public class SignInActivity extends AppCompatActivity {
                         accountCall.enqueue(new Callback<Account>() {
                             @Override
                             public void onResponse(Call<Account> call, Response<Account> response) {
-                                finish();
+                                if (response.code() != 400) {
+                                    finish();
+                                } else {
+                                    Toast.makeText(SignInActivity.this, "User already exists", Toast.LENGTH_LONG).show();
+                                }
+
                             }
 
                             @Override
                             public void onFailure(Call<Account> call, Throwable t) {
+
                                 finish();
                             }
                         });
@@ -82,7 +88,8 @@ public class SignInActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-
+                Toast.makeText(SignInActivity.this,"Not able to Sign in whitout internet", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
 

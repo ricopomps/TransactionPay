@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
-@JsonIgnoreProperties({"createdAt", "updatedAt", "__v"})
+@JsonIgnoreProperties({"Sucesso","createdAt", "updatedAt", "__v"})
 @Entity
 public class Account implements Serializable {
     @PrimaryKey @NonNull

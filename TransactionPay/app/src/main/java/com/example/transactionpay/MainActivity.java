@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         getBalance();
         mUsername.setText(sharedPreferences.getString("userName", "no name"));
-        mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
     }
 
     public void trigger(View view) {
@@ -115,6 +114,11 @@ public class MainActivity extends AppCompatActivity {
                 editor.putInt("userAccountStatus", account.getStatus());
                 editor.putString("userAccountCode",account.getCode());
                 mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
+                if(account.getStatus()==1){
+                    mAccountCode.setTextColor(getColor(R.color.colorWhite));
+                } else {
+                    mAccountCode.setTextColor(getColor(R.color.colorRed));
+                }
                 editor.apply();
             }
 

@@ -64,11 +64,16 @@ public class LoginActivity extends AppCompatActivity {
                         AppDatabase.class, "bank_database").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
                 User user = db.userDao().getUserByCpf(username.getText().toString());
-               if(user.getPws().equals(password.getText().toString())){
-                   intent.putExtra(USER, user);
-                   startActivityForResult(intent, START);
-               }
+                try {
+                    if (user.getPws().equals(password.getText().toString())) {
+                        intent.putExtra(USER, user);
+                        startActivityForResult(intent, START);
+                    }
+                } catch (NullPointerException e) {
+                    Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_LONG).show();
                 }
+
+            }
         });
 
     }

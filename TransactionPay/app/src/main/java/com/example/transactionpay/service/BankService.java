@@ -4,6 +4,7 @@ import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.AccountCreator;
 import com.example.transactionpay.model.Amount;
 import com.example.transactionpay.model.Boleto;
+import com.example.transactionpay.model.Code;
 import com.example.transactionpay.model.Receipt;
 import com.example.transactionpay.model.Status;
 import com.example.transactionpay.model.Transaction;
@@ -53,7 +54,7 @@ public interface BankService {
     Call<Transaction> transfer(@Header("cpf") String cpf, @Header("pws") String pws, @Body Transferencia transferencia);
 
     @POST("transaction/deposito")
-    Call<Transaction> deposit(@Header("account") String account,@Header("cpf") String cpf,@Header("pws")String pws,@Body Amount amount);
+    Call<Code> deposit(@Header("account") String account, @Header("cpf") String cpf, @Header("pws")String pws, @Body Amount amount);
 
     @GET("transaction/getByUser")
     Call<List<Receipt>> getHistory(@Header("cpf") String cpf, @Header("pws") String pws);

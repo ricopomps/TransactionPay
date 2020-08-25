@@ -71,6 +71,7 @@
             android:id="@+id/firstEditText"
             android:layout_width="match_parent"
             android:gravity="center"
+            android:inputType="number"
             android:layout_height="wrap_content">
 
         </EditText>
@@ -86,6 +87,7 @@
         <EditText
             android:id="@+id/secondEditText"
             android:gravity="center"
+            android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -106,6 +108,8 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="Active" />
+
+
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
