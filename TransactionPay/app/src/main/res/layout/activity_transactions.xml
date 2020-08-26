@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_green_dark"
+    android:background="@drawable/background5"
     android:padding="35dp"
     tools:context=".TransactionsActivity">
 
@@ -12,7 +12,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@android:color/holo_orange_light"
+        android:background="@drawable/shape"
         android:orientation="vertical"
         android:padding="30dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,6 +21,7 @@
 
         <TextView
             android:id="@+id/title"
+            android:textColor="@color/colorWhite"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical|center"
@@ -32,7 +33,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/holo_orange_light"
+
         android:layout_marginTop="50dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,71 +43,109 @@
          <TextView
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
+             android:textColor="@color/colorWhite"
+             android:background="@drawable/shape"
              android:text="Confirm password:"
              android:gravity="center"
              >
          </TextView>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
         <EditText
             android:id="@+id/confirmPassword"
             android:layout_width="match_parent"
+            android:textColorHint="@color/colorWhite"
+            android:background="@drawable/shape"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|center"
             android:inputType="textPassword"
             android:hint="Confirm password">
 
         </EditText>
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
 
         <TextView
             android:id="@+id/firstTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/shape"
+
             android:text="Codigo do boleto"
             android:gravity="center"
             >
 
         </TextView>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
         <EditText
             android:id="@+id/firstEditText"
             android:layout_width="match_parent"
             android:gravity="center"
+            android:textColor="@color/colorWhite"
             android:inputType="number"
+            android:background="@drawable/shape"
             android:layout_height="wrap_content">
 
         </EditText>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
         <TextView
             android:id="@+id/secondTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/shape"
+            android:textColor="@color/colorWhite"
             android:text="Amount"
             android:gravity="center"
             >
         </TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
         <EditText
             android:id="@+id/secondEditText"
             android:gravity="center"
             android:inputType="number"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/shape"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
         </EditText>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/shape"
             android:layout_gravity="center"
+            android:textColor="@color/colorWhite"
             android:gravity="center_vertical|center"
             android:onClick="start"
             android:text="Confirm" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
         <CheckBox
             android:id="@+id/checkBox"
+            android:textColor="@color/colorWhite"
             android:onClick="onCheckBoxClicked"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
+            android:background="@drawable/shape"
             android:text="Active" />
 
 

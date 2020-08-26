@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:padding="35dp"
     android:id="@+id/receipt"
-    android:background="@android:color/holo_green_dark"
+    android:background="@drawable/background5"
     android:layout_height="match_parent">
+
 
     <LinearLayout
         android:id="@+id/linearLayout4"
@@ -15,7 +16,7 @@
         android:layout_height="150dp"
         android:layout_marginBottom="60dp"
         android:layout_weight="1"
-        android:background="@android:color/holo_orange_light"
+        android:background="@drawable/shape"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/receiptConfirm"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,6 +26,7 @@
         <TextView
             android:id="@+id/receiptTransactionType"
             android:layout_width="match_parent"
+            android:textColor="@color/colorWhite"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -34,6 +36,7 @@
             android:id="@+id/receiptSourceAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:text="sourceAccount" />
@@ -41,6 +44,7 @@
         <TextView
             android:id="@+id/receiptTargetAccount"
             android:layout_width="match_parent"
+            android:textColor="@color/colorWhite"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
@@ -51,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:textColor="@color/colorWhite"
             android:layout_weight="1"
             android:text="amount" />
 
@@ -58,6 +63,7 @@
             android:id="@+id/receiptDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:text="date" />
@@ -69,6 +75,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:onClick="endReceipt"
+        android:background="@drawable/shape"
+        android:textColor="@color/colorWhite"
         android:text="Confirm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +86,7 @@
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@android:color/holo_orange_light"
+        android:background="@drawable/shape"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +96,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/colorWhite"
             android:gravity="center_vertical|center"
             android:text="Receipt"
             android:textSize="40dp"
@@ -102,7 +111,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@android:color/holo_orange_light"
+        android:background="@color/colorPaleGreen"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         android:visibility="invisible"

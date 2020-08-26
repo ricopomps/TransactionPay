@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="150dp"
-        android:background="@android:color/holo_orange_light"
+        android:background="@drawable/shape"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,12 +23,14 @@
             android:id="@+id/transactionType"
             android:layout_width="match_parent"
             android:layout_weight="1"
+            android:textColor="@color/colorWhite"
             android:gravity="center"
             android:layout_height="wrap_content"
             android:text="transactionType" />
 
         <TextView
             android:id="@+id/sourceAccount"
+            android:textColor="@color/colorWhite"
             android:layout_marginStart="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,6 +42,7 @@
             android:layout_width="match_parent"
             android:layout_marginStart="20dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
             android:layout_weight="1"
             android:text="targetAccount" />
 
@@ -47,12 +50,14 @@
             android:id="@+id/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:text="amount" />
 
         <TextView
             android:id="@+id/date"
+            android:textColor="@color/colorWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

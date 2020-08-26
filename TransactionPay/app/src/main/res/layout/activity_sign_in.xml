@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background5"
+    android:padding="20dp"
     tools:context=".SignInActivity">
 
 
@@ -12,7 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_gravity="center_horizontal"
-        android:background="@android:color/background_dark"
+        android:background="@drawable/shape"
         android:gravity="center_vertical|left"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +27,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Welcome to Transaction Pay!"
-            android:textColor="#F8E11E"
+            android:textColor="@color/colorWhite"
             android:textSize="40dp"
             android:textStyle="bold" />
 
@@ -34,7 +36,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/holo_green_dark"
+
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +51,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Sign In:"
-            android:textColor="#F8E11E"
+            android:textColor="@color/colorWhite"
             android:textSize="30dp"
             android:textStyle="bold" />
 
@@ -58,25 +60,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/darker_gray"
+            android:background="@drawable/shape"
             android:gravity="center_vertical|left">
 
             <EditText
                 android:id="@+id/cpf"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:hint="CPF"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
                 android:textSize="25dp" />
 
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/darker_gray"
+            android:background="@drawable/shape"
             android:gravity="center_vertical|left">
 
             <EditText
@@ -85,14 +94,19 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:hint="Name"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
                 android:textSize="25dp" />
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/darker_gray"
+            android:background="@drawable/shape"
             android:gravity="center_vertical|left">
 
             <EditText
@@ -101,13 +115,19 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:hint="Phone"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
                 android:textSize="25dp" />
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/darker_gray"
+            android:background="@drawable/shape"
             android:gravity="center_vertical|left">
 
             <EditText
@@ -116,6 +136,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:hint="Password"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
                 android:textSize="25dp" />
         </LinearLayout>
 
@@ -135,14 +157,15 @@
             >
 
 
-
             <Button
                 android:id="@+id/signInButton"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_weight="1"
+                android:background="@drawable/shape"
                 android:onClick="signIn"
-                android:text="Sign IN" />
+                android:text="Sign IN"
+                android:textColor="@color/colorWhite" />
 
         </LinearLayout>
 
