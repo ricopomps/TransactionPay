@@ -1,6 +1,7 @@
 package com.example.transactionpay.service;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     private final LayoutInflater layoutInflater;
     private Context context;
     public List<Receipt> list;
+
     public HistoryAdapter(Context context, List<Receipt> list) {
         this.context = context;
         this.list = list;
-        this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
@@ -44,6 +45,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         DateFormat df = new SimpleDateFormat(pattern);
         Receipt receipt = list.get(position);
         holder.transactionType.setText("unknow");
+        holder.transactionType.setTypeface(Typeface.DEFAULT_BOLD);
         holder.sourceAccount.setText("Source account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(0)).getCode());
         holder.targetAccount.setText("Target account: " + MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(1)).getCode());
         holder.sourceAccount.setVisibility(View.INVISIBLE);
@@ -52,15 +54,22 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             holder.transactionType.setText(context.getString(R.string.transfer));
             holder.sourceAccount.setVisibility(View.VISIBLE);
             holder.targetAccount.setVisibility(View.VISIBLE);
+            if (MainActivity.db.accountDao().getAccountCodeById(receipt.getBank_account().get(0)).getCode().equals(MainActivity.sharedPreferences.getString("userAccountCode", "0"))) {
+                holder.amount.setTextColor(context.getColor(R.color.colorRed));
+            } else {
+                holder.amount.setTextColor(context.getColor(R.color.colorForest));
+            }
 
         }
         if (receipt.getSource_transaction() == 1) {
             holder.transactionType.setText(context.getString(R.string.deposit));
+            holder.amount.setTextColor(context.getColor(R.color.colorForest));
 
         }
 
         if (receipt.getSource_transaction() == 2) {
             holder.transactionType.setText(context.getString(R.string.boleto));
+            holder.amount.setTextColor(context.getColor(R.color.colorRed));
         }
 
         holder.amount.setText("Amount: R$" + String.valueOf(receipt.getAmount()));

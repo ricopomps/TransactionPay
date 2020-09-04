@@ -100,6 +100,14 @@ public class TransactionsActivity extends AppCompatActivity {
                 TransactionsActivity.this.startActivity(new Intent(TransactionsActivity.this, HistoryActivity.class));
                 finish();
                 break;
+            case (R.string.logoff):
+                MainActivity.editor.clear();
+                MainActivity.editor.apply();
+                startActivity(MainActivity.createIntent(TransactionsActivity.this));
+                finish();
+            case (R.string.recycle):
+                startActivity(new Intent(TransactionsActivity.this,RecyclerviewActivity.class));
+                finish();
             default:
                 title.setText("DEFAULT");
                 break;
@@ -118,12 +126,12 @@ public class TransactionsActivity extends AppCompatActivity {
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-                    if(response.code()!=400) {
+                    if (response.code() != 400) {
                         MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountActiveStatus));
                         MainActivity.editor.apply();
                     } else {
 
-                        Toast.makeText(TransactionsActivity.this,"Invalid password",Toast.LENGTH_LONG).show();
+                        Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
 
                     }
                 }
@@ -144,12 +152,12 @@ public class TransactionsActivity extends AppCompatActivity {
             call.enqueue(new Callback<Account>() {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
-                    if(response.code()!=400) {
+                    if (response.code() != 400) {
                         MainActivity.editor.putInt("userAccountStatus", getResources().getInteger(R.integer.accountCancelledStatus));
                         MainActivity.editor.apply();
                     } else {
 
-                        Toast.makeText(TransactionsActivity.this,"Invalid password",Toast.LENGTH_LONG).show();
+                        Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -169,12 +177,18 @@ public class TransactionsActivity extends AppCompatActivity {
 
         switch (stringId) {
             case (R.string.deposit):
+
                 if (!isDouble(editText1.getText().toString())) {
                     Toast.makeText(TransactionsActivity.this, "Must be a valid amount", Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (Double.parseDouble(editText1.getText().toString()) <= 0) {
                     Toast.makeText(TransactionsActivity.this, "Must be a positive value", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (MainActivity.sharedPreferences.getInt("userAccountStatus", 0) != 1) {
+                    Toast.makeText(TransactionsActivity.this, "Account deactivated", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -195,7 +209,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Code> call, Throwable t) {
-                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess" , Toast.LENGTH_LONG).show();
+                        Toast.makeText(TransactionsActivity.this, "Unable to proceed without internet acess", Toast.LENGTH_LONG).show();
                         finish();
                     }
 
@@ -211,6 +225,10 @@ public class TransactionsActivity extends AppCompatActivity {
                     Toast.makeText(TransactionsActivity.this, "Must be a positive value", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if (MainActivity.sharedPreferences.getInt("userAccountStatus", 0) != 1) {
+                    Toast.makeText(TransactionsActivity.this, "Account deactivated", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if (editText1.getText().toString().equals(MainActivity.sharedPreferences.getString("userAccount", ""))) {
                     Toast.makeText(TransactionsActivity.this, "Source account is the same as target account", Toast.LENGTH_LONG).show();
                     break;
@@ -222,7 +240,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 try {
                     Account account = MainActivity.db.accountDao().getAccountByCode(editText1.getText().toString());
                     account.getCode();
-                } catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     Toast.makeText(TransactionsActivity.this, "invalid target account", Toast.LENGTH_LONG).show();
                     break;
                 }
@@ -232,7 +250,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     public void onResponse(Call<Transaction> call, Response<Transaction> response) {
 
                         if (response.code() != 400) {
-                            startActivity(new Intent(TransactionsActivity.this,ReceiptActivity.class));
+                            startActivity(new Intent(TransactionsActivity.this, ReceiptActivity.class));
                             finish();
                         } else {
                             Toast.makeText(TransactionsActivity.this, "Invalid password", Toast.LENGTH_LONG).show();
@@ -256,6 +274,10 @@ public class TransactionsActivity extends AppCompatActivity {
                 }
                 if (Double.parseDouble(editText2.getText().toString()) <= 0) {
                     Toast.makeText(TransactionsActivity.this, "Must be a positive value", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (MainActivity.sharedPreferences.getInt("userAccountStatus", 0) != 1) {
+                    Toast.makeText(TransactionsActivity.this, "Account deactivated", Toast.LENGTH_LONG).show();
                     return;
                 }
 

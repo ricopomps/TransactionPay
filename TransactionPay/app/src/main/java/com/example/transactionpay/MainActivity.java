@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.transactionpay.model.Account;
 import com.example.transactionpay.model.AccountCreator;
+import com.example.transactionpay.model.Receipt;
 import com.example.transactionpay.model.Type;
 import com.example.transactionpay.model.User;
 import com.example.transactionpay.repository.AppDatabase;
@@ -23,6 +24,7 @@ import com.example.transactionpay.service.SelectionAdapter;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mUsername;
     private TextView mBalance;
     private TextView mAccountCode;
+    private TextView mLastTransaction;
+    private TextView mSecondLastTransaction;
     private User user;
     private List<Integer> list = new ArrayList<>();
     private RecyclerView mSelectionRecyclerView;
@@ -55,12 +59,16 @@ public class MainActivity extends AppCompatActivity {
         list.add((R.string.boleto));
         list.add((R.string.config));
         list.add((R.string.history));
+        list.add((R.string.logoff));
+//        list.add((R.string.recycle));
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "bank_database").allowMainThreadQueries().fallbackToDestructiveMigration().build();
         Intent intent = getIntent();
         mUsername = findViewById(R.id.usernameShow);
         mBalance = findViewById(R.id.avaiableMoney);
         mAccountCode = findViewById(R.id.accountCode);
+        mLastTransaction = findViewById(R.id.lastTransaction);
+        mSecondLastTransaction = findViewById(R.id.secondLastTransaction);
         user = (User) intent.getSerializableExtra(LoginActivity.USER);
         try {
             db.userDao().insertUsers(user);
@@ -84,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         mSelectionRecyclerView.getAdapter().notifyDataSetChanged();
         getBalance();
         refreshDatabase();
-        mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
+        getLastTransaction();
 
 
     }
@@ -93,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getBalance();
+        getLastTransaction();
         mUsername.setText(sharedPreferences.getString("userName", "no name"));
     }
 
@@ -102,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getBalance() {
         mUsername.setText(sharedPreferences.getString("userName", "no name"));
-        mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
+        mAccountCode.setText("Account code: " + sharedPreferences.getString("userAccountCode", ""));
         Call<Account> call = new RetrofitConfig().getBankService().getAccount(user.getCpf(), user.getPws());
         call.enqueue(new Callback<Account>() {
             @Override
@@ -112,10 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 editor.putFloat("userAccountBalance", (float) account.getAccount_balance());
                 editor.putString("userAccount", account.getCode());
                 editor.putInt("userAccountStatus", account.getStatus());
-                editor.putString("userAccountCode",account.getCode());
-                mAccountCode.setText("Account code: "+ sharedPreferences.getString("userAccountCode", ""));
-                if(account.getStatus()==1){
-                    mAccountCode.setTextColor(getColor(R.color.colorWhite));
+                editor.putString("userAccountCode", account.getCode());
+                mAccountCode.setText("Account code: " + sharedPreferences.getString("userAccountCode", ""));
+                if (account.getStatus() == 1) {
+                    mAccountCode.setTextColor(getColor(R.color.colorWhiteWhite));
                 } else {
                     mAccountCode.setTextColor(getColor(R.color.colorRed));
                 }
@@ -125,11 +134,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Account> call, Throwable t) {
                 Account account = db.accountDao().getAccountByUser(user.get_id());
-                mBalance.setText("R$ " + String.valueOf(account.getAccount_balance()));
+                mBalance.setText("R$ " + new DecimalFormat("#0.00").format((account.getAccount_balance())));;
                 editor.putFloat("userAccountBalance", (float) account.getAccount_balance());
                 editor.putString("userAccount", account.getCode());
                 editor.putInt("userAccountStatus", account.getStatus());
-                editor.putString("userAccountCode",account.getCode());
+                editor.putString("userAccountCode", account.getCode());
                 editor.apply();
             }
         });
@@ -179,4 +188,109 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void getLastTransaction() {
+        Call<List<Receipt>> call = new RetrofitConfig().getBankService().getHistory(MainActivity.sharedPreferences.getString("userCpf", ""), MainActivity.db.userDao().getUserByCpf(MainActivity.sharedPreferences.getString("userCpf", "")).getPws());
+        call.enqueue(new Callback<List<Receipt>>() {
+            @Override
+            public void onResponse(Call<List<Receipt>> call, Response<List<Receipt>> response) {
+                List<Receipt> receipts = response.body();
+                Collections.reverse(receipts);
+                try {
+                    if (receipts.get(0).getSource_transaction() == 0) {
+                        mLastTransaction.setText("Transfer: " + receipts.get(0).getAmount());
+                        if (MainActivity.db.accountDao().getAccountCodeById(receipts.get(0).getBank_account().get(0)).getCode().equals(MainActivity.sharedPreferences.getString("userAccountCode", ""))) {
+                            mLastTransaction.setTextColor(getResources().getColor(R.color.colorRed));
+                        } else {
+                            mLastTransaction.setTextColor(getResources().getColor(R.color.colorForest));
+                        }
+
+                    }
+                    if (receipts.get(0).getSource_transaction() == 1) {
+                        mLastTransaction.setText("Deposit: " + receipts.get(0).getAmount());
+                        mLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorForest));
+                    }
+                    if (receipts.get(0).getSource_transaction() == 2) {
+                        mLastTransaction.setText("Boleto: " + receipts.get(0).getAmount());
+                        mLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorRed));
+                    }
+                    if (receipts.get(1).getSource_transaction() == 0) {
+                        mSecondLastTransaction.setText("Transfer: " + receipts.get(1).getAmount());
+                        if (MainActivity.db.accountDao().getAccountCodeById(receipts.get(1).getBank_account().get(0)).getCode().equals(MainActivity.sharedPreferences.getString("userAccountCode", ""))) {
+                            mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorRed));
+                        } else {
+                            mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorForest));
+                        }
+                    }
+                    if (receipts.get(1).getSource_transaction() == 1) {
+                        mSecondLastTransaction.setText("Deposit: " + receipts.get(1).getAmount());
+                        mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorForest));
+                    }
+                    if (receipts.get(1).getSource_transaction() == 2) {
+                        mSecondLastTransaction.setText("Boleto: " + receipts.get(1).getAmount());
+                        mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorRed));
+                    }
+
+                } catch (NullPointerException e) {
+
+                } catch (IndexOutOfBoundsException e) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Receipt>> call, Throwable t) {
+
+                List <Receipt> receipts = MainActivity.db.receiptDao().getAllReceipts();
+                Collections.reverse(receipts);
+                try {
+                    if (receipts.get(0).getSource_transaction() == 0) {
+                        mLastTransaction.setText("Transfer: " + receipts.get(0).getAmount());
+                        if (MainActivity.db.accountDao().getAccountCodeById(receipts.get(0).getBank_account().get(0)).getCode().equals(MainActivity.sharedPreferences.getString("userAccountCode", ""))) {
+                            mLastTransaction.setTextColor(getResources().getColor(R.color.colorRed));
+                        } else {
+                            mLastTransaction.setTextColor(getResources().getColor(R.color.colorForest));
+                        }
+
+                    }
+                    if (receipts.get(0).getSource_transaction() == 1) {
+                        mLastTransaction.setText("Deposit: " + receipts.get(0).getAmount());
+                        mLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorForest));
+                    }
+                    if (receipts.get(0).getSource_transaction() == 2) {
+                        mLastTransaction.setText("Boleto: " + receipts.get(0).getAmount());
+                        mLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorRed));
+                    }
+                    if (receipts.get(1).getSource_transaction() == 0) {
+                        mSecondLastTransaction.setText("Transfer: " + receipts.get(1).getAmount());
+                        if (MainActivity.db.accountDao().getAccountCodeById(receipts.get(1).getBank_account().get(0)).getCode().equals(MainActivity.sharedPreferences.getString("userAccountCode", ""))) {
+                            mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorRed));
+                        } else {
+                            mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorForest));
+                        }
+                    }
+                    if (receipts.get(1).getSource_transaction() == 1) {
+                        mSecondLastTransaction.setText("Deposit: " + receipts.get(1).getAmount());
+                        mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorForest));
+                    }
+                    if (receipts.get(1).getSource_transaction() == 2) {
+                        mSecondLastTransaction.setText("Boleto: " + receipts.get(1).getAmount());
+                        mSecondLastTransaction.setTextColor(MainActivity.this.getColor(R.color.colorRed));
+                    }
+
+                } catch (NullPointerException e) {
+
+                } catch (IndexOutOfBoundsException e) {
+
+                }
+            }
+        });
+
+
+    }
+
+    public static Intent createIntent(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        return intent;
+    }
 }

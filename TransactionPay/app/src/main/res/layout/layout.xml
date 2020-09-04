@@ -17,17 +17,23 @@
         android:background="@drawable/shape"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/layoutImage"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/boleto" />
 
         <TextView
             android:id="@+id/layoutText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@color/colorWhite"
+            android:layout_height="29dp"
             android:gravity="center_vertical|center"
             android:text="TextView"
-
+            android:textColor="@color/colorWhite"
 
 
             />
+
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

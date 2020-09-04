@@ -6,6 +6,7 @@ import androidx.room.Query;
 
 import com.example.transactionpay.model.Receipt;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -19,4 +20,7 @@ public interface ReceiptDao {
 
     @Query("DELETE FROM receipt")
     void deleteReceipts();
+
+    @Query("SELECT * FROM receipt WHERE createdAt IS :date")
+    List<Receipt> getReceiptsByDate(Date date);
 }

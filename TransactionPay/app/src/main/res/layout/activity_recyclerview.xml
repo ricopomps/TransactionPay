@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="@drawable/backgroudblack"
-    android:padding="35dp"
-    tools:context=".HistoryActivity">
+    android:layout_height="match_parent"
+    tools:context=".RecyclerviewActivity">
 
 
     <EditText
@@ -20,14 +19,14 @@
         android:gravity="center"
         android:hint="Confirm password"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/historyRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/timeRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ok"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"></EditText>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/historyRecyclerView"
+        android:id="@+id/timeRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="50dp"
@@ -74,5 +73,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pws"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

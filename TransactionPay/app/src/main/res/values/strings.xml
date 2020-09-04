@@ -3,8 +3,10 @@
     <string name="deposit">Deposit</string>
     <string name="transfer">Transfer</string>
     <string name="boleto">Boleto</string>
-    <string name="config">Config</string>
+    <string name="config">Profile</string>
     <string name="history">History</string>
+    <string name="logoff">Logoff</string>
+    <string name="recycle">Recylce</string>
     <!--    <string name="userName">userName</string>-->
     <!--    <string name="userCpf">userCpf</string>-->
     <!--    <string name="userId">userId</string>-->

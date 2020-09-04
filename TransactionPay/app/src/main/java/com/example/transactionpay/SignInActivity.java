@@ -2,6 +2,7 @@ package com.example.transactionpay;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -43,7 +44,11 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(SignInActivity.this, "Not a valid phone number", Toast.LENGTH_LONG).show();
             return;
         }
-
+        final ProgressDialog dialog = new ProgressDialog(SignInActivity.this);
+        dialog.setMessage("Loading");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+        dialog.show();
         User user = new User("", mCpf.getText().toString(), mName.getText().toString(), "", Integer.parseInt(mPhone.getText().toString()), mPws.getText().toString());
         Call<User> call = new RetrofitConfig().getBankService().createUser(user);
         call.enqueue(new Callback<User>() {
@@ -66,12 +71,13 @@ public class SignInActivity extends AppCompatActivity {
                                 } else {
                                     Toast.makeText(SignInActivity.this, "User already exists", Toast.LENGTH_LONG).show();
                                 }
+                                dialog.dismiss();
 
                             }
 
                             @Override
                             public void onFailure(Call<Account> call, Throwable t) {
-
+                                dialog.dismiss();
                                 finish();
                             }
                         });
@@ -80,7 +86,7 @@ public class SignInActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Account> call, Throwable t) {
-
+                        dialog.dismiss();
                     }
                 });
 
@@ -89,6 +95,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(SignInActivity.this,"Not able to Sign in whitout internet", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
                 finish();
             }
         });

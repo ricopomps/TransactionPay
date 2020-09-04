@@ -3,6 +3,7 @@ package com.example.transactionpay;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +42,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
+        final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
+        dialog.setMessage("Loading");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+        dialog.show();
         Call<User> call = new RetrofitConfig().getBankService().getUser(username.getText().toString(), password.getText().toString());
         call.enqueue(new Callback<User>() {
             @Override
@@ -50,8 +56,11 @@ public class LoginActivity extends AppCompatActivity {
                     user = response.body();
                     intent.putExtra(USER, user);
                     startActivityForResult(intent, START);
+                    dialog.dismiss();
+                    finish();
 
                 } else {
+                    dialog.dismiss();
                     Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_LONG).show();
 
                 }
@@ -60,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                dialog.dismiss();
                 AppDatabase db = Room.databaseBuilder(getApplicationContext(),
                         AppDatabase.class, "bank_database").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 

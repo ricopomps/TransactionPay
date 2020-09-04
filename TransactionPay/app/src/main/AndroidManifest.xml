@@ -6,12 +6,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/tclauncher2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/tclauncher2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ReceiptActivity"></activity>
+        <activity android:name=".RecyclerviewActivity"></activity>
+        <activity android:name=".ReceiptActivity" />
         <activity android:name=".HistoryActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".TransactionsActivity" />
